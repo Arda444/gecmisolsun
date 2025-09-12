@@ -2,65 +2,175 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Senin İçin ❤️</title>
   <style>
-    :root{
-      --bg:#fff8fb;
-      --accent:#ff6b9a;
-      --heart-size:clamp(110px,22vmin,200px);
-      --text-color:#3b2b3a;
+    :root {
+      --bg: #fff8fb;
+      --accent: #ff6b9a;
+      --heart-size: clamp(90px, 18vmin, 160px);
+      --text-color: #3b2b3a;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(180deg,#fff8fb 0%, #f0f7ff 60%);color:var(--text-color);transition: background 1s ease;}
-    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
-
-    .card{max-width:720px;width:100%;text-align:center;padding:20px}
-    h1{font-size:clamp(18px,4vw,26px);margin:0 0 12px;font-weight:600}
-    p.lead{font-size:clamp(14px,3.2vw,18px);margin:0 0 18px;color:#5a4756}
-
-    .heart-btn{
-      width:var(--heart-size);height:var(--heart-size);border-radius:50%;display:inline-grid;place-items:center;background:radial-gradient(circle at 30% 30%, #ffd6e6 0%, var(--accent) 60%);box-shadow:0 12px 30px rgba(101,16,69,0.18), inset 0 -8px 18px rgba(255,255,255,0.12);cursor:pointer;user-select:none;border:none;transform:translateZ(0);
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg, #fff8fb 0%, #f0f7ff 60%);
+      color: var(--text-color);
+      transition: background 1s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .heart-symbol{font-size:calc(var(--heart-size) / 2);filter:drop-shadow(0 6px 12px rgba(101,16,69,0.15));}
-
-    /* ice overlay */
-    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);background:radial-gradient(circle at center, #dff9ff 0%, #b7e4f9 50%, #7ac0e0 100%);}
-    .ice-overlay.show{opacity:1;pointer-events:none}
-    .ice-layer{position:absolute;inset:0;background:rgba(255,255,255,0.18);backdrop-filter:blur(14px) contrast(1.2) saturate(1.5);}
-
-    /* ice crack animation */
-    .crack{position:absolute;width:2px;height:140px;background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(180,220,255,0.4));opacity:0;box-shadow:0 0 6px rgba(200,240,255,0.9);border-radius:2px;}
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      padding: 16px;
+    }
+    h1 {
+      font-size: clamp(16px, 3.8vw, 24px);
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+    p.lead {
+      font-size: clamp(13px, 3vw, 16px);
+      margin: 0 0 14px;
+      color: #5a4756;
+    }
+    .heart-btn {
+      width: var(--heart-size);
+      height: var(--heart-size);
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: radial-gradient(circle at 30% 30%, #ffd6e6 0%, var(--accent) 60%);
+      box-shadow: 0 8px 20px rgba(101,16,69,0.18), inset 0 -6px 12px rgba(255,255,255,0.12);
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      transform: translateZ(0);
+      touch-action: manipulation;
+    }
+    .heart-symbol {
+      font-size: calc(var(--heart-size) / 2.2);
+      filter: drop-shadow(0 4px 8px rgba(101,16,69,0.15));
+    }
+    .ice-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .5s cubic-bezier(.2,.9,.3,1);
+      background: radial-gradient(circle at center, #dff9ff 0%, #b7e4f9 50%, #7ac0e0 100%);
+    }
+    .ice-overlay.show {
+      opacity: 1;
+    }
+    .ice-layer {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px) contrast(1.2) saturate(1.4);
+    }
+    .crack {
+      position: absolute;
+      width: 2px;
+      height: 100px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(180,220,255,0.4));
+      opacity: 0;
+      box-shadow: 0 0 4px rgba(200,240,255,0.8);
+      border-radius: 2px;
+    }
     @keyframes crackAnim {
-      0%{opacity:0;transform:scaleY(0) rotate(0deg)}
-      20%{opacity:1;transform:scaleY(1) rotate(var(--rot))}
-      100%{opacity:0;transform:scaleY(1.1) rotate(var(--rot))}
+      0% { opacity: 0; transform: scaleY(0) rotate(0deg); }
+      20% { opacity: 1; transform: scaleY(1) rotate(var(--rot)); }
+      100% { opacity: 0; transform: scaleY(1.1) rotate(var(--rot)); }
     }
-
-    /* snow shards */
-    .shard{position:absolute;width:20px;height:8px;background:linear-gradient(90deg,#e6f6ff,#cfeeff,#aee2ff);opacity:.95;border-radius:4px;transform:rotate(25deg);filter:blur(.5px);box-shadow:0 0 8px rgba(200,240,255,.9);}
-
-    /* ice crystal pattern */
-    .crystal{position:absolute;width:12px;height:12px;background:radial-gradient(circle at center, #fff 0%, #cfeeff 70%, transparent 100%);border-radius:50%;opacity:0.85;filter:blur(1px);box-shadow:0 0 10px rgba(180,220,255,0.9);}
-
-    /* falling flowers */
-    .flower{position:fixed;font-size:22px;pointer-events:none;will-change:transform,opacity;text-shadow:0 0 6px rgba(255,255,255,0.8)}
-
-    /* compliment hearts */
-    .compliment{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.2);opacity:0;pointer-events:none;background:linear-gradient(180deg,#fff 0%, #ffdfee 100%);padding:18px 22px;border-radius:18px;box-shadow:0 10px 30px rgba(60,18,50,0.12), inset 0 0 20px rgba(255,255,255,0.6);min-width:160px;text-align:center}
-    .compliment .heart-inner{font-size:28px;margin-bottom:8px;text-shadow:0 0 8px rgba(255,0,100,0.4)}
-    .compliment p{margin:0;font-weight:600}
-
-    /* tiny hearts that float up */
-    .floating-heart{position:fixed;font-size:20px;pointer-events:none;text-shadow:0 0 6px rgba(255,100,150,0.6)}
-
-    /* animations */
-    @keyframes fall {to {transform: translateY(120vh) rotate(360deg);}}
-    @keyframes floatUp {to {transform: translateY(-120px) scale(1.08);opacity:0}}
-    @keyframes popIn {to{transform:translate(-50%,-50%) scale(1);opacity:1}}
-
-    /* responsive spacing */
-    @media (max-width:420px){:root{--heart-size:150px}}
+    .shard {
+      position: absolute;
+      width: 16px;
+      height: 6px;
+      background: linear-gradient(90deg, #e6f6ff, #cfeeff);
+      opacity: .9;
+      border-radius: 3px;
+      transform: rotate(25deg);
+      filter: blur(.4px);
+      box-shadow: 0 0 6px rgba(200,240,255,.8);
+    }
+    .crystal {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle at center, #fff 0%, #cfeeff 70%, transparent 100%);
+      border-radius: 50%;
+      opacity: 0.8;
+      filter: blur(.8px);
+      box-shadow: 0 0 8px rgba(180,220,255,0.8);
+    }
+    .flower {
+      position: fixed;
+      font-size: 18px;
+      pointer-events: none;
+      will-change: transform, opacity;
+      text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    }
+    .compliment {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%) scale(0.2);
+      opacity: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, #fff 0%, #ffdfee 100%);
+      padding: 14px 18px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(60,18,50,0.1), inset 0 0 16px rgba(255,255,255,0.5);
+      min-width: 140px;
+      text-align: center;
+    }
+    .compliment .heart-inner {
+      font-size: 24px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 6px rgba(255,0,100,0.3);
+    }
+    .compliment p {
+      margin: 0;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .floating-heart {
+      position: fixed;
+      font-size: 18px;
+      pointer-events: none;
+      text-shadow: 0 0 5px rgba(255,100,150,0.5);
+    }
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(360deg); }
+    }
+    @keyframes floatUp {
+      to { transform: translateY(-100px) scale(1.05); opacity: 0; }
+    }
+    @keyframes popIn {
+      to { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    }
+    @media (max-width: 420px) {
+      :root { --heart-size: clamp(80px, 16vmin, 120px); }
+      .card { padding: 12px; }
+      h1 { font-size: clamp(14px, 3.5vw, 20px); }
+      p.lead { font-size: clamp(12px, 2.8vw, 14px); }
+    }
+    @media (max-width: 360px) {
+      .wrap { padding: 12px; }
+      .compliment { min-width: 120px; padding: 12px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -68,18 +178,13 @@
     <div class="card">
       <h1>Sevgilim için küçük bir sürpriz</h1>
       <p class="lead">Senii çokkk seviyorummmm aşkımmmmm sevgimle iyileştirmekkk istiyorummmm seniiiiii. Aşağıdaki kalbe dokunur musunnn?</p>
-
       <button class="heart-btn" id="heartBtn" aria-label="Kalbe dokun"><span class="heart-symbol">❤️</span></button>
     </div>
   </div>
-
-  <!-- efekt kapsayıcıları -->
   <div class="ice-overlay" id="iceOverlay">
     <div class="ice-layer"></div>
   </div>
-
   <div id="effectsRoot"></div>
-
   <script>
     const heartBtn = document.getElementById('heartBtn');
     const iceOverlay = document.getElementById('iceOverlay');
@@ -97,146 +202,157 @@
       'O kadar güzelsin ki bakmalara doyamıyorummmm'
     ];
 
-    function random(min,max){return Math.random()*(max-min)+min}
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-    function spawnShards(){
+    function spawnShards() {
       const prev = iceOverlay.querySelectorAll('.shard, .crystal');
-      prev.forEach(n=>n.remove());
-      const count = 50;
-      for(let i=0;i<count;i++){
+      prev.forEach(n => n.remove());
+      const count = Math.min(30, window.innerWidth < 420 ? 20 : 30);
+      for (let i = 0; i < count; i++) {
         const s = document.createElement('div');
-        s.className='shard';
-        const left = Math.floor(random(0,100));
-        const top = Math.floor(random(-10,100));
-        s.style.left = left + '%';
-        s.style.top = top + '%';
-        s.style.transform = `rotate(${random(-60,60)}deg)`;
-        s.style.opacity = random(0.35,0.95);
-        s.style.width = Math.floor(random(14,90))+'px';
-        s.style.height = Math.floor(random(6,22))+'px';
+        s.className = 'shard';
+        s.style.left = Math.floor(random(0, 100)) + '%';
+        s.style.top = Math.floor(random(-10, 100)) + '%';
+        s.style.transform = `rotate(${random(-60, 60)}deg)`;
+        s.style.opacity = random(0.3, 0.9);
+        s.style.width = Math.floor(random(12, 70)) + 'px';
+        s.style.height = Math.floor(random(5, 18)) + 'px';
         iceOverlay.appendChild(s);
       }
-      for(let j=0;j<30;j++){
+      for (let j = 0; j < Math.min(20, window.innerWidth < 420 ? 15 : 20); j++) {
         const c = document.createElement('div');
-        c.className='crystal';
-        c.style.left = random(0,100)+'%';
-        c.style.top = random(0,100)+'%';
+        c.className = 'crystal';
+        c.style.left = random(0, 100) + '%';
+        c.style.top = random(0, 100) + '%';
         iceOverlay.appendChild(c);
       }
     }
 
-    function spawnCracks(){
-      for(let i=0;i<12;i++){
+    function spawnCracks() {
+      for (let i = 0; i < 8; i++) {
         const c = document.createElement('div');
         c.className = 'crack';
-        c.style.left = random(10,90)+'%';
-        c.style.top = random(10,90)+'%';
-        c.style.setProperty('--rot', random(-40,40)+'deg');
-        c.style.animation = `crackAnim 1.6s forwards`;
+        c.style.left = random(10, 90) + '%';
+        c.style.top = random(10, 90) + '%';
+        c.style.setProperty('--rot', random(-40, 40) + 'deg');
+        c.style.animation = `crackAnim 1.4s forwards`;
         iceOverlay.appendChild(c);
-        setTimeout(()=>c.remove(), 1700);
+        setTimeout(() => c.remove(), 1500);
       }
     }
 
-    function spawnFlowers(){
-      const emojis = ['🌸','🌺','🌼','💐','🌷','🌻'];
-      const flowerCount = 70;
-      for(let i=0;i<flowerCount;i++){
+    function spawnFlowers() {
+      const emojis = ['🌸', '🌺', '🌼', '💐', '🌷', '🌻'];
+      const flowerCount = Math.min(50, window.innerWidth < 420 ? 30 : 50);
+      for (let i = 0; i < flowerCount; i++) {
         const el = document.createElement('div');
         el.className = 'flower';
-        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-        const startX = random(0,100);
-        el.style.left = startX + 'vw';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = random(0, 100) + 'vw';
         el.style.top = '-8vh';
-        const delay = random(0,1.2);
-        const duration = random(2.2,4.5);
+        const delay = random(0, 1);
+        const duration = random(2, 4);
         el.style.animation = `fall ${duration}s linear ${delay}s forwards`;
-        el.style.fontSize = Math.floor(random(18,36))+'px';
-        el.style.opacity = random(0.85,1);
+        el.style.fontSize = Math.floor(random(16, 32)) + 'px';
+        el.style.opacity = random(0.8, 1);
         effectsRoot.appendChild(el);
-        setTimeout(()=>el.remove(), (delay+duration)*1000 + 300);
+        setTimeout(() => el.remove(), (delay + duration) * 1000 + 200);
       }
     }
 
-    function spawnComplimentHearts(){
+    function spawnComplimentHearts() {
       const box = document.createElement('div');
       box.className = 'compliment';
-      box.innerHTML = `<div class="heart-inner">❤️</div><p>${compliments[Math.floor(Math.random()*compliments.length)]}</p>`;
+      box.innerHTML = `<div class="heart-inner">❤️</div><p>${compliments[Math.floor(Math.random() * compliments.length)]}</p>`;
       effectsRoot.appendChild(box);
-      requestAnimationFrame(()=>{
-        box.style.transition = 'transform .6s cubic-bezier(.2,.9,.3,1), opacity .6s';
+      requestAnimationFrame(() => {
+        box.style.transition = 'transform .5s cubic-bezier(.2,.9,.3,1), opacity .5s';
         box.style.transform = 'translate(-50%,-50%) scale(1)';
         box.style.opacity = '1';
       });
-      for(let i=0;i<8;i++){
+      for (let i = 0; i < 6; i++) {
         const f = document.createElement('div');
         f.className = 'floating-heart';
         f.textContent = '💖';
-        const left = 50 + random(-30,30);
-        const top = 50 + random(-10,30);
+        const left = 50 + random(-25, 25);
+        const top = 50 + random(-8, 25);
         f.style.left = left + 'vw';
         f.style.top = top + 'vh';
         f.style.opacity = 1;
         effectsRoot.appendChild(f);
-        const dur = random(1400,2600);
+        const dur = random(1200, 2200);
         f.animate([
-          {transform: 'translateY(0) scale(0.9)', opacity:1},
-          {transform: `translateY(-${random(60,160)}px) scale(1.15)`, opacity:0}
-        ],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'});
-        setTimeout(()=>f.remove(), dur+80);
+          { transform: 'translateY(0) scale(0.8)', opacity: 1 },
+          { transform: `translateY(-${random(50, 140)}px) scale(1.1)`, opacity: 0 }
+        ], { duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)' });
+        setTimeout(() => f.remove(), dur + 60);
       }
-      setTimeout(()=>{box.style.transform='translate(-50%,-50%) scale(.8)';box.style.opacity=0;setTimeout(()=>box.remove(),500)}, 3000);
+      setTimeout(() => {
+        box.style.transform = 'translate(-50%,-50%) scale(.8)';
+        box.style.opacity = 0;
+        setTimeout(() => box.remove(), 400);
+      }, 2500);
     }
 
-    function triggerEffects(){
+    function triggerEffects() {
       spawnShards();
       spawnCracks();
       iceOverlay.classList.add('show');
       spawnFlowers();
       spawnComplimentHearts();
 
-      for(let i=0;i<12;i++){
+      for (let i = 0; i < 8; i++) {
         const sh = document.createElement('div');
-        sh.className='floating-heart';
+        sh.className = 'floating-heart';
         sh.textContent = '💗';
         const rect = heartBtn.getBoundingClientRect();
-        const x = rect.left + rect.width/2 + random(-rect.width/1.2, rect.width/1.2);
-        const y = rect.top + random(-rect.height/2, rect.height/2);
+        const x = rect.left + rect.width / 2 + random(-rect.width / 1.5, rect.width / 1.5);
+        const y = rect.top + random(-rect.height / 2, rect.height / 2);
         sh.style.left = (x / window.innerWidth * 100) + 'vw';
         sh.style.top = (y / window.innerHeight * 100) + 'vh';
         effectsRoot.appendChild(sh);
-        const dur = random(800,1500);
+        const dur = random(600, 1200);
         sh.animate([
-          {transform:'translateY(0) scale(.8)', opacity:1},
-          {transform:`translateY(-${random(40,120)}px) scale(1.2)`, opacity:0}
-        ],{duration:dur,easing:'ease-out'});
-        setTimeout(()=>sh.remove(), dur+80);
+          { transform: 'translateY(0) scale(.7)', opacity: 1 },
+          { transform: `translateY(-${random(30, 100)}px) scale(1.1)`, opacity: 0 }
+        ], { duration: dur, easing: 'ease-out' });
+        setTimeout(() => sh.remove(), dur + 60);
       }
 
-      body.style.background = 'linear-gradient(180deg,#d9f3ff 0%, #a6e6ff 100%)';
-      setTimeout(()=>{
-        body.style.background = 'linear-gradient(180deg,#fff8fb 0%, #f0f7ff 60%)';
-      }, 2500);
+      body.style.background = 'linear-gradient(180deg, #d9f3ff 0%, #a6e6ff 100%)';
+      setTimeout(() => {
+        body.style.background = 'linear-gradient(180deg, #fff8fb 0%, #f0f7ff 60%)';
+      }, 2000);
 
-      setTimeout(()=>{
+      setTimeout(() => {
         iceOverlay.classList.remove('show');
         const shards = iceOverlay.querySelectorAll('.shard, .crystal');
-        shards.forEach(s=>s.remove());
-      }, 2500);
+        shards.forEach(s => s.remove());
+      }, 2000);
     }
 
-    heartBtn.addEventListener('click', ()=>{
+    heartBtn.addEventListener('click', () => {
       triggerEffects();
       heartBtn.animate([
-        {transform:'scale(1)'},
-        {transform:'scale(.92)'},
-        {transform:'scale(1)'}
-      ],{duration:320, easing:'cubic-bezier(.2,.8,.2,1)'});
+        { transform: 'scale(1)' },
+        { transform: 'scale(.9)' },
+        { transform: 'scale(1)' }
+      ], { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' });
     });
 
-    heartBtn.addEventListener('touchstart', (e)=>{e.preventDefault(); triggerEffects();});
-    heartBtn.addEventListener('keydown', (e)=>{if(e.key==='Enter' || e.key===' ') {e.preventDefault(); triggerEffects();}});
-    document.addEventListener('dblclick', ()=>triggerEffects());
+    heartBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      triggerEffects();
+    });
+
+    heartBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        triggerEffects();
+      }
+    });
   </script>
 </body>
 </html>

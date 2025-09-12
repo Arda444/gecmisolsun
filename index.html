@@ -25,9 +25,9 @@
     .heart-symbol{font-size:calc(var(--heart-size) / 2);filter:drop-shadow(0 6px 12px rgba(101,16,69,0.15));}
 
     /* ice overlay */
-    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);}
+    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);background-image:url('https://www.transparenttextures.com/patterns/ice-age.png');background-size:cover;}
     .ice-overlay.show{opacity:1;pointer-events:none}
-    .ice-layer{position:absolute;inset:0;background:linear-gradient(180deg, rgba(240,250,255,0.9), rgba(250,255,255,0.6));backdrop-filter:blur(4px) saturate(1.1);mix-blend-mode:screen;}
+    .ice-layer{position:absolute;inset:0;background:rgba(255,255,255,0.35);backdrop-filter:blur(6px) saturate(1.2);}
 
     /* snow shards */
     .shard{position:absolute;width:20px;height:6px;background:linear-gradient(90deg,#e6f6ff,#cfeeff);opacity:.95;border-radius:3px;transform:rotate(25deg);filter:blur(.2px);}
@@ -90,7 +90,6 @@
     function random(min,max){return Math.random()*(max-min)+min}
 
     function spawnShards(){
-      // temizle önceki shardlar
       const prev = iceOverlay.querySelectorAll('.shard');
       prev.forEach(n=>n.remove());
       const count = 20;
@@ -110,9 +109,8 @@
     }
 
     function spawnFlowers(){
-      // create several flower emojis that fall
       const emojis = ['🌸','🌺','🌼','💐','🌷','🌻'];
-      const flowerCount = 40; // artırıldı
+      const flowerCount = 40;
       for(let i=0;i<flowerCount;i++){
         const el = document.createElement('div');
         el.className = 'flower';
@@ -184,8 +182,7 @@
         setTimeout(()=>sh.remove(), dur+80);
       }
 
-      // arka planı buz rengi yap
-      body.style.background = 'linear-gradient(180deg,#e0f7ff 0%, #b3ecff 100%)';
+      body.style.background = 'linear-gradient(180deg,#d9f3ff 0%, #a6e6ff 100%)';
       setTimeout(()=>{
         body.style.background = 'linear-gradient(180deg,#fff8fb 0%, #f0f7ff 60%)';
       }, 2500);

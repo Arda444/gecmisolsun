@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Senin İçin ❤️</title>
+  <style>
+    :root{
+      --bg:#fff8fb;
+      --accent:#ff6b9a;
+      --heart-size:clamp(110px,22vmin,200px);
+      --text-color:#3b2b3a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(180deg,#fff8fb 0%, #f0f7ff 60%);color:var(--text-color)}
+    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+
+    .card{max-width:720px;width:100%;text-align:center;padding:20px}
+    h1{font-size:clamp(18px,4vw,26px);margin:0 0 12px;font-weight:600}
+    p.lead{font-size:clamp(14px,3.2vw,18px);margin:0 0 18px;color:#5a4756}
+
+    .heart-btn{
+      width:var(--heart-size);height:var(--heart-size);border-radius:50%;display:inline-grid;place-items:center;background:radial-gradient(circle at 30% 30%, #ffd6e6 0%, var(--accent) 60%);box-shadow:0 12px 30px rgba(101,16,69,0.18), inset 0 -8px 18px rgba(255,255,255,0.12);cursor:pointer;user-select:none;border:none;transform:translateZ(0);
+    }
+    .heart-symbol{font-size:calc(var(--heart-size) / 2);filter:drop-shadow(0 6px 12px rgba(101,16,69,0.15));}
+
+    /* ice overlay */
+    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);}
+    .ice-overlay.show{opacity:1;pointer-events:none}
+    .ice-layer{position:absolute;inset:0;background:linear-gradient(180deg, rgba(240,250,255,0.9), rgba(250,255,255,0.6));backdrop-filter:blur(4px) saturate(1.1);mix-blend-mode:screen;}
+
+    /* snow shards */
+    .shard{position:absolute;width:20px;height:6px;background:linear-gradient(90deg,#e6f6ff,#cfeeff);opacity:.95;border-radius:3px;transform:rotate(25deg);filter:blur(.2px);}
+
+    /* falling flowers */
+    .flower{position:fixed;font-size:22px;pointer-events:none;will-change:transform,opacity}
+
+    /* compliment hearts */
+    .compliment{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.2);opacity:0;pointer-events:none;background:linear-gradient(180deg,#fff 0%, #ffdfee 100%);padding:18px 22px;border-radius:18px;box-shadow:0 10px 30px rgba(60,18,50,0.12);min-width:160px;text-align:center}
+    .compliment .heart-inner{font-size:28px;margin-bottom:8px}
+    .compliment p{margin:0;font-weight:600}
+
+    /* tiny hearts that float up */
+    .floating-heart{position:fixed;font-size:20px;pointer-events:none}
+
+    /* animations */
+    @keyframes fall {to {transform: translateY(120vh) rotate(360deg);}}
+    @keyframes floatUp {to {transform: translateY(-120px) scale(1.08);opacity:0}}
+    @keyframes popIn {to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+
+    /* responsive spacing */
+    @media (max-width:420px){:root{--heart-size:150px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Sevgilim için küçük bir sürpriz</h1>
+      <p class="lead">Seni çok seviyorum — sevgimle iyileştirmek istiyorum seni. Aşağıdaki kalbe dokunur musun?</p>
+
+      <button class="heart-btn" id="heartBtn" aria-label="Kalbe dokun"><span class="heart-symbol">❤️</span></button>
+    </div>
+  </div>
+
+  <!-- efekt kapsayıcıları -->
+  <div class="ice-overlay" id="iceOverlay">
+    <div class="ice-layer"></div>
+    <!-- baktığımızda rastgele shard'lar JS ile eklenecek -->
+  </div>
+
+  <div id="effectsRoot"></div>
+
+  <script>
+    const heartBtn = document.getElementById('heartBtn');
+    const iceOverlay = document.getElementById('iceOverlay');
+    const effectsRoot = document.getElementById('effectsRoot');
+
+    const compliments = [
+      'Gülüşün dünyamı aydınlatıyor',
+      'Ellerin çok nazik, iyileşiyor olacak',
+      'Seninle her şey daha güzel',
+      'Sen benim en değerlimsin',
+      'Kalbim hep seninle atıyor',
+      'Sen cesur ve çok tatlısın',
+      'Sen her zaman güçlüsün',
+      'Işığın etrafındakileri ısıtıyor'
+    ];
+
+    function random(min,max){return Math.random()*(max-min)+min}
+
+    function spawnShards(){
+      // temizle önceki shardlar
+      const prev = iceOverlay.querySelectorAll('.shard');
+      prev.forEach(n=>n.remove());
+      const count = 14;
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className='shard';
+        const left = Math.floor(random(5,95));
+        const top = Math.floor(random(-10,40));
+        s.style.left = left + '%';
+        s.style.top = top + '%';
+        s.style.transform = `rotate(${random(-40,40)}deg)`;
+        s.style.opacity = random(0.35,0.95);
+        s.style.width = Math.floor(random(18,60))+'px';
+        s.style.height = Math.floor(random(6,14))+'px';
+        iceOverlay.appendChild(s);
+      }
+    }
+
+    function spawnFlowers(){
+      // create several flower emojis that fall
+      const emojis = ['🌸','🌺','🌼','💐','🌷','🌻'];
+      const flowerCount = 16;
+      for(let i=0;i<flowerCount;i++){
+        const el = document.createElement('div');
+        el.className = 'flower';
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        const startX = random(5,95);
+        el.style.left = startX + 'vw';
+        el.style.top = '-8vh';
+        const delay = random(0,0.8);
+        const duration = random(2.2,4.0);
+        el.style.animation = `fall ${duration}s linear ${delay}s forwards`;
+        el.style.fontSize = Math.floor(random(18,36))+'px';
+        el.style.opacity = random(0.85,1);
+        // small horizontal drift via transform inside setInterval
+        effectsRoot.appendChild(el);
+        // remove after animation
+        setTimeout(()=>el.remove(), (delay+duration)*1000 + 300);
+      }
+    }
+
+    function spawnComplimentHearts(){
+      // Center heart card with compliment
+      const box = document.createElement('div');
+      box.className = 'compliment';
+      box.innerHTML = `<div class="heart-inner">❤️</div><p>${compliments[Math.floor(Math.random()*compliments.length)]}</p>`;
+      effectsRoot.appendChild(box);
+      // trigger pop
+      requestAnimationFrame(()=>{
+        box.style.transition = 'transform .6s cubic-bezier(.2,.9,.3,1), opacity .6s';
+        box.style.transform = 'translate(-50%,-50%) scale(1)';
+        box.style.opacity = '1';
+      });
+      // floating tiny hearts
+      for(let i=0;i<8;i++){
+        const f = document.createElement('div');
+        f.className = 'floating-heart';
+        f.textContent = '💖';
+        const left = 50 + random(-30,30);
+        const top = 50 + random(-10,30);
+        f.style.left = left + 'vw';
+        f.style.top = top + 'vh';
+        f.style.opacity = 1;
+        effectsRoot.appendChild(f);
+        const dur = random(1400,2600);
+        f.animate([
+          {transform: 'translateY(0) scale(0.9)', opacity:1},
+          {transform: `translateY(-${random(60,160)}px) scale(1.15)`, opacity:0}
+        ],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'});
+        setTimeout(()=>f.remove(), dur+80);
+      }
+      // remove compliment after a while
+      setTimeout(()=>{box.style.transform='translate(-50%,-50%) scale(.8)';box.style.opacity=0;setTimeout(()=>box.remove(),500)}, 3000);
+    }
+
+    let active = false;
+    function triggerEffects(){
+      // toggle active state briefly
+      spawnShards();
+      iceOverlay.classList.add('show');
+      spawnFlowers();
+      spawnComplimentHearts();
+
+      // quick sparkle hearts around the button
+      for(let i=0;i<12;i++){
+        const sh = document.createElement('div');
+        sh.className='floating-heart';
+        sh.textContent = '💗';
+        const rect = heartBtn.getBoundingClientRect();
+        const x = rect.left + rect.width/2 + random(-rect.width/1.2, rect.width/1.2);
+        const y = rect.top + random(-rect.height/2, rect.height/2);
+        sh.style.left = (x / window.innerWidth * 100) + 'vw';
+        sh.style.top = (y / window.innerHeight * 100) + 'vh';
+        effectsRoot.appendChild(sh);
+        const dur = random(800,1500);
+        sh.animate([
+          {transform:'translateY(0) scale(.8)', opacity:1},
+          {transform:`translateY(-${random(40,120)}px) scale(1.2)`, opacity:0}
+        ],{duration:dur,easing:'ease-out'});
+        setTimeout(()=>sh.remove(), dur+80);
+      }
+
+      // remove ice overlay after a bit (like serinletici etki)
+      setTimeout(()=>{
+        iceOverlay.classList.remove('show');
+        // remove shards
+        const shards = iceOverlay.querySelectorAll('.shard');
+        shards.forEach(s=>s.remove());
+      }, 2200);
+    }
+
+    heartBtn.addEventListener('click', ()=>{
+      triggerEffects();
+      // small pulse on click
+      heartBtn.animate([
+        {transform:'scale(1)'},
+        {transform:'scale(.92)'},
+        {transform:'scale(1)'}
+      ],{duration:320, easing:'cubic-bezier(.2,.8,.2,1)'});
+    });
+
+    // also support touchstart so mobile feels instant
+    heartBtn.addEventListener('touchstart', (e)=>{e.preventDefault(); triggerEffects();});
+
+    // accessibility: keyboard
+    heartBtn.addEventListener('keydown', (e)=>{if(e.key==='Enter' || e.key===' ') {e.preventDefault(); triggerEffects();}});
+
+    // polite hint: let user tap anywhere on mobile to trigger too (optional)
+    document.addEventListener('dblclick', ()=>triggerEffects());
+  </script>
+</body>
+</html>

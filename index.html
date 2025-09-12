@@ -25,23 +25,34 @@
     .heart-symbol{font-size:calc(var(--heart-size) / 2);filter:drop-shadow(0 6px 12px rgba(101,16,69,0.15));}
 
     /* ice overlay */
-    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);background-image:url('https://www.transparenttextures.com/patterns/ice-age.png');background-size:cover;}
+    .ice-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s cubic-bezier(.2,.9,.3,1);background:radial-gradient(circle at center, #dff9ff 0%, #b7e4f9 50%, #7ac0e0 100%);}
     .ice-overlay.show{opacity:1;pointer-events:none}
-    .ice-layer{position:absolute;inset:0;background:rgba(255,255,255,0.35);backdrop-filter:blur(6px) saturate(1.2);}
+    .ice-layer{position:absolute;inset:0;background:rgba(255,255,255,0.18);backdrop-filter:blur(14px) contrast(1.2) saturate(1.5);}
+
+    /* ice crack animation */
+    .crack{position:absolute;width:2px;height:140px;background:linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(180,220,255,0.4));opacity:0;box-shadow:0 0 6px rgba(200,240,255,0.9);border-radius:2px;}
+    @keyframes crackAnim {
+      0%{opacity:0;transform:scaleY(0) rotate(0deg)}
+      20%{opacity:1;transform:scaleY(1) rotate(var(--rot))}
+      100%{opacity:0;transform:scaleY(1.1) rotate(var(--rot))}
+    }
 
     /* snow shards */
-    .shard{position:absolute;width:20px;height:6px;background:linear-gradient(90deg,#e6f6ff,#cfeeff);opacity:.95;border-radius:3px;transform:rotate(25deg);filter:blur(.2px);}
+    .shard{position:absolute;width:20px;height:8px;background:linear-gradient(90deg,#e6f6ff,#cfeeff,#aee2ff);opacity:.95;border-radius:4px;transform:rotate(25deg);filter:blur(.5px);box-shadow:0 0 8px rgba(200,240,255,.9);}
+
+    /* ice crystal pattern */
+    .crystal{position:absolute;width:12px;height:12px;background:radial-gradient(circle at center, #fff 0%, #cfeeff 70%, transparent 100%);border-radius:50%;opacity:0.85;filter:blur(1px);box-shadow:0 0 10px rgba(180,220,255,0.9);}
 
     /* falling flowers */
-    .flower{position:fixed;font-size:22px;pointer-events:none;will-change:transform,opacity}
+    .flower{position:fixed;font-size:22px;pointer-events:none;will-change:transform,opacity;text-shadow:0 0 6px rgba(255,255,255,0.8)}
 
     /* compliment hearts */
-    .compliment{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.2);opacity:0;pointer-events:none;background:linear-gradient(180deg,#fff 0%, #ffdfee 100%);padding:18px 22px;border-radius:18px;box-shadow:0 10px 30px rgba(60,18,50,0.12);min-width:160px;text-align:center}
-    .compliment .heart-inner{font-size:28px;margin-bottom:8px}
+    .compliment{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.2);opacity:0;pointer-events:none;background:linear-gradient(180deg,#fff 0%, #ffdfee 100%);padding:18px 22px;border-radius:18px;box-shadow:0 10px 30px rgba(60,18,50,0.12), inset 0 0 20px rgba(255,255,255,0.6);min-width:160px;text-align:center}
+    .compliment .heart-inner{font-size:28px;margin-bottom:8px;text-shadow:0 0 8px rgba(255,0,100,0.4)}
     .compliment p{margin:0;font-weight:600}
 
     /* tiny hearts that float up */
-    .floating-heart{position:fixed;font-size:20px;pointer-events:none}
+    .floating-heart{position:fixed;font-size:20px;pointer-events:none;text-shadow:0 0 6px rgba(255,100,150,0.6)}
 
     /* animations */
     @keyframes fall {to {transform: translateY(120vh) rotate(360deg);}}
@@ -56,7 +67,7 @@
   <div class="wrap">
     <div class="card">
       <h1>Sevgilim için küçük bir sürpriz</h1>
-      <p class="lead">Seni çok seviyorum — sevgimle iyileştirmek istiyorum seni. Aşağıdaki kalbe dokunur musun?</p>
+      <p class="lead">Senii çokkk seviyorummmm aşkımmmmm sevgimle iyileştirmekkk istiyorummmm seniiiiii. Aşağıdaki kalbe dokunur musunnn?</p>
 
       <button class="heart-btn" id="heartBtn" aria-label="Kalbe dokun"><span class="heart-symbol">❤️</span></button>
     </div>
@@ -65,7 +76,6 @@
   <!-- efekt kapsayıcıları -->
   <div class="ice-overlay" id="iceOverlay">
     <div class="ice-layer"></div>
-    <!-- baktığımızda rastgele shard'lar JS ile eklenecek -->
   </div>
 
   <div id="effectsRoot"></div>
@@ -78,39 +88,59 @@
 
     const compliments = [
       'Gülüşün dünyamı aydınlatıyor',
-      'Ellerin çok nazik, iyileşiyor olacak',
-      'Seninle her şey daha güzel',
-      'Sen benim en değerlimsin',
-      'Kalbim hep seninle atıyor',
-      'Sen cesur ve çok tatlısın',
-      'Sen her zaman güçlüsün',
-      'Işığın etrafındakileri ısıtıyor'
+      'O tatlişşş ellerineee kıyamamm bennnn',
+      'En değerlimmm benimmm',
+      'Güzelimmm hepp iyii oll hepp yüzün gülsünn',
+      'Kalbim hep seninle atıyorrrr',
+      'Benimm minikk tatlişşş kuzummm çokkk güçlüü bunu da beraber atlatacağızz',
+      'Gözlerininnn ışıltısı dünyamıı aydınlatıyorrr',
+      'O kadar güzelsin ki bakmalara doyamıyorummmm'
     ];
 
     function random(min,max){return Math.random()*(max-min)+min}
 
     function spawnShards(){
-      const prev = iceOverlay.querySelectorAll('.shard');
+      const prev = iceOverlay.querySelectorAll('.shard, .crystal');
       prev.forEach(n=>n.remove());
-      const count = 20;
+      const count = 50;
       for(let i=0;i<count;i++){
         const s = document.createElement('div');
         s.className='shard';
-        const left = Math.floor(random(5,95));
-        const top = Math.floor(random(-10,40));
+        const left = Math.floor(random(0,100));
+        const top = Math.floor(random(-10,100));
         s.style.left = left + '%';
         s.style.top = top + '%';
-        s.style.transform = `rotate(${random(-40,40)}deg)`;
+        s.style.transform = `rotate(${random(-60,60)}deg)`;
         s.style.opacity = random(0.35,0.95);
-        s.style.width = Math.floor(random(18,60))+'px';
-        s.style.height = Math.floor(random(6,14))+'px';
+        s.style.width = Math.floor(random(14,90))+'px';
+        s.style.height = Math.floor(random(6,22))+'px';
         iceOverlay.appendChild(s);
+      }
+      for(let j=0;j<30;j++){
+        const c = document.createElement('div');
+        c.className='crystal';
+        c.style.left = random(0,100)+'%';
+        c.style.top = random(0,100)+'%';
+        iceOverlay.appendChild(c);
+      }
+    }
+
+    function spawnCracks(){
+      for(let i=0;i<12;i++){
+        const c = document.createElement('div');
+        c.className = 'crack';
+        c.style.left = random(10,90)+'%';
+        c.style.top = random(10,90)+'%';
+        c.style.setProperty('--rot', random(-40,40)+'deg');
+        c.style.animation = `crackAnim 1.6s forwards`;
+        iceOverlay.appendChild(c);
+        setTimeout(()=>c.remove(), 1700);
       }
     }
 
     function spawnFlowers(){
       const emojis = ['🌸','🌺','🌼','💐','🌷','🌻'];
-      const flowerCount = 40;
+      const flowerCount = 70;
       for(let i=0;i<flowerCount;i++){
         const el = document.createElement('div');
         el.className = 'flower';
@@ -160,6 +190,7 @@
 
     function triggerEffects(){
       spawnShards();
+      spawnCracks();
       iceOverlay.classList.add('show');
       spawnFlowers();
       spawnComplimentHearts();
@@ -189,9 +220,9 @@
 
       setTimeout(()=>{
         iceOverlay.classList.remove('show');
-        const shards = iceOverlay.querySelectorAll('.shard');
+        const shards = iceOverlay.querySelectorAll('.shard, .crystal');
         shards.forEach(s=>s.remove());
-      }, 2200);
+      }, 2500);
     }
 
     heartBtn.addEventListener('click', ()=>{

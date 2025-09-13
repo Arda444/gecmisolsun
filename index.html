@@ -63,57 +63,57 @@
       font-size: calc(var(--heart-size) / 2.2);
       filter: drop-shadow(0 4px 8px rgba(101,16,69,0.15));
     }
-    .ice-overlay {
+    .flame-overlay {
       position: fixed;
       inset: 0;
       pointer-events: none;
       opacity: 0;
       transition: opacity .5s cubic-bezier(.2,.9,.3,1);
-      background: radial-gradient(circle at center, #dff9ff 0%, #b7e4f9 50%, #7ac0e0 100%);
+      background: radial-gradient(circle at center, #ff4d00 0%, #ff8c00 50%, #ffcc33 100%);
     }
-    .ice-overlay.show {
+    .flame-overlay.show {
       opacity: 1;
     }
-    .ice-layer {
+    .flame-layer {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px) contrast(1.2) saturate(1.4);
+      background: rgba(255,100,0,0.2);
+      backdrop-filter: blur(8px) contrast(1.2) saturate(1.6);
     }
-    .crack {
+    .spark {
       position: absolute;
-      width: 2px;
-      height: 100px;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(180,220,255,0.4));
+      width: 4px;
+      height: 12px;
+      background: linear-gradient(to bottom, #fff 0%, #ff4500 50%, #ff8c00 100%);
       opacity: 0;
-      box-shadow: 0 0 4px rgba(200,240,255,0.8);
+      box-shadow: 0 0 6px rgba(255,100,0,0.8);
       border-radius: 2px;
     }
-    @keyframes crackAnim {
+    @keyframes sparkAnim {
       0% { opacity: 0; transform: scaleY(0) rotate(0deg); }
       20% { opacity: 1; transform: scaleY(1) rotate(var(--rot)); }
-      100% { opacity: 0; transform: scaleY(1.1) rotate(var(--rot)); }
+      100% { opacity: 0; transform: scaleY(1.2) rotate(var(--rot)); }
     }
-    .shard {
-      position: absolute;
-      width: 16px;
-      height: 6px;
-      background: linear-gradient(90deg, #e6f6ff, #cfeeff);
-      opacity: .9;
-      border-radius: 3px;
-      transform: rotate(25deg);
-      filter: blur(.4px);
-      box-shadow: 0 0 6px rgba(200,240,255,.8);
-    }
-    .crystal {
+    .ember {
       position: absolute;
       width: 10px;
       height: 10px;
-      background: radial-gradient(circle at center, #fff 0%, #cfeeff 70%, transparent 100%);
+      background: radial-gradient(circle at center, #fff 0%, #ff4500 60%, transparent 100%);
+      opacity: .9;
       border-radius: 50%;
-      opacity: 0.8;
-      filter: blur(.8px);
-      box-shadow: 0 0 8px rgba(180,220,255,0.8);
+      filter: blur(.6px);
+      box-shadow: 0 0 8px rgba(255,100,0,.8);
+    }
+    .flame {
+      position: absolute;
+      width: 16px;
+      height: 24px;
+      background: linear-gradient(to bottom, #ff4500, #ff8c00);
+      opacity: .8;
+      border-radius: 50% 50% 20% 20%;
+      transform: rotate(-20deg);
+      filter: blur(.5px);
+      box-shadow: 0 0 10px rgba(255,100,0,.9);
     }
     .flower {
       position: fixed;
@@ -181,13 +181,13 @@
       <button class="heart-btn" id="heartBtn" aria-label="Kalbe dokun"><span class="heart-symbol">❤️</span></button>
     </div>
   </div>
-  <div class="ice-overlay" id="iceOverlay">
-    <div class="ice-layer"></div>
+  <div class="flame-overlay" id="flameOverlay">
+    <div class="flame-layer"></div>
   </div>
   <div id="effectsRoot"></div>
   <script>
     const heartBtn = document.getElementById('heartBtn');
-    const iceOverlay = document.getElementById('iceOverlay');
+    const flameOverlay = document.getElementById('flameOverlay');
     const effectsRoot = document.getElementById('effectsRoot');
     const body = document.body;
 
@@ -206,40 +206,40 @@
       return Math.random() * (max - min) + min;
     }
 
-    function spawnShards() {
-      const prev = iceOverlay.querySelectorAll('.shard, .crystal');
+    function spawnFlames() {
+      const prev = flameOverlay.querySelectorAll('.ember, .flame');
       prev.forEach(n => n.remove());
       const count = Math.min(30, window.innerWidth < 420 ? 20 : 30);
       for (let i = 0; i < count; i++) {
-        const s = document.createElement('div');
-        s.className = 'shard';
-        s.style.left = Math.floor(random(0, 100)) + '%';
-        s.style.top = Math.floor(random(-10, 100)) + '%';
-        s.style.transform = `rotate(${random(-60, 60)}deg)`;
-        s.style.opacity = random(0.3, 0.9);
-        s.style.width = Math.floor(random(12, 70)) + 'px';
-        s.style.height = Math.floor(random(5, 18)) + 'px';
-        iceOverlay.appendChild(s);
+        const f = document.createElement('div');
+        f.className = 'flame';
+        f.style.left = Math.floor(random(0, 100)) + '%';
+        f.style.top = Math.floor(random(-10, 100)) + '%';
+        f.style.transform = `rotate(${random(-30, 30)}deg)`;
+        f.style.opacity = random(0.5, 0.9);
+        f.style.width = Math.floor(random(12, 40)) + 'px';
+        f.style.height = Math.floor(random(20, 50)) + 'px';
+        flameOverlay.appendChild(f);
       }
       for (let j = 0; j < Math.min(20, window.innerWidth < 420 ? 15 : 20); j++) {
-        const c = document.createElement('div');
-        c.className = 'crystal';
-        c.style.left = random(0, 100) + '%';
-        c.style.top = random(0, 100) + '%';
-        iceOverlay.appendChild(c);
+        const e = document.createElement('div');
+        e.className = 'ember';
+        e.style.left = random(0, 100) + '%';
+        e.style.top = random(0, 100) + '%';
+        flameOverlay.appendChild(e);
       }
     }
 
-    function spawnCracks() {
+    function spawnSparks() {
       for (let i = 0; i < 8; i++) {
-        const c = document.createElement('div');
-        c.className = 'crack';
-        c.style.left = random(10, 90) + '%';
-        c.style.top = random(10, 90) + '%';
-        c.style.setProperty('--rot', random(-40, 40) + 'deg');
-        c.style.animation = `crackAnim 1.4s forwards`;
-        iceOverlay.appendChild(c);
-        setTimeout(() => c.remove(), 1500);
+        const s = document.createElement('div');
+        s.className = 'spark';
+        s.style.left = random(10, 90) + '%';
+        s.style.top = random(10, 90) + '%';
+        s.style.setProperty('--rot', random(-40, 40) + 'deg');
+        s.style.animation = `sparkAnim 1.2s forwards`;
+        flameOverlay.appendChild(s);
+        setTimeout(() => s.remove(), 1300);
       }
     }
 
@@ -297,9 +297,9 @@
     }
 
     function triggerEffects() {
-      spawnShards();
-      spawnCracks();
-      iceOverlay.classList.add('show');
+      spawnFlames();
+      spawnSparks();
+      flameOverlay.classList.add('show');
       spawnFlowers();
       spawnComplimentHearts();
 
@@ -321,15 +321,15 @@
         setTimeout(() => sh.remove(), dur + 60);
       }
 
-      body.style.background = 'linear-gradient(180deg, #d9f3ff 0%, #a6e6ff 100%)';
+      body.style.background = 'linear-gradient(180deg, #ff8c00 0%, #ff4500 100%)';
       setTimeout(() => {
         body.style.background = 'linear-gradient(180deg, #fff8fb 0%, #f0f7ff 60%)';
       }, 2000);
 
       setTimeout(() => {
-        iceOverlay.classList.remove('show');
-        const shards = iceOverlay.querySelectorAll('.shard, .crystal');
-        shards.forEach(s => s.remove());
+        flameOverlay.classList.remove('show');
+        const flames = flameOverlay.querySelectorAll('.ember, .flame');
+        flames.forEach(f => f.remove());
       }, 2000);
     }
 
